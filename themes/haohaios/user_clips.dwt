@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="container">
+<!-- {if $action eq 'default'} -->
+    <section class="main-view">
+        <div class="my">
+            <div class="my_head">
+                <div class="my_head_pic">
+                    <img class="my_head_img" width="130" height="130" src="{$info.headimgurl}">
+                </div>
+                <div class="my_head_info">
+                    <h4 class="my_head_name ">{$info.user_name}</h4>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="nav">
+                <ul class="nav_list">
+                    <li class="nav_item nav_order">
+                        <a href="user.php?act=order_list">
+                            <div class="nav_item_hd">我的订单</div>
+                        </a>
+                        <div class="nav_item_bd">
+                            <a href="user.php?act=order_list"><span class="nav_item_txt">全部</span></a>
+                            <a href="user.php?act=order_list&composite_status=100">
+                                <span class="nav_item_txt">待付款<i class="nav_item_num" id="need_pay_count"  style="display:none">0</i></span>
+                            </a>
+                            <a href="user.php?act=order_list&composite_status=120">
+                                <span class="nav_item_txt">待收货<i class="nav_item_num" id="need_recv_count" style="display:none">0</i></span>
+                            </a>
+                        </div>
+                    </li>
+                    {if $open_team}
+                    <li class="nav_item nav_cheap">
+                        <div class="nav_item_hd"><a href="user.php?act=team_list"> 我的拼团 </a></div>
+                    </li>
+                    {/if}
+                    <li class="nav_item nav_cart">
+                        <div class="nav_item_hd"><a href="user.php?act=address_list">我的地址 </a></div>
+                    </li>
+                    <li class="nav_item nav_cart">
+                        <div class="nav_item_hd_coupons"><a class="coupons_a" href="user.php?act=bonus">我的优惠券 </a></div>
+                    </li>
+                    <li class="nav_item nav_cart">
+                        <div class="nav_item_hd_coupons_sale"><a class="coupons_a" href="article.php?id=38">售后服务 </a></div>
+                    </li>
+                    <!-- 
+                    <li class="nav_item nav_cart">
+                        <div class="nav_item_hd_coupons"><a class="coupons_a" href="user.php?act=account_deposit">我要充值 </a></div>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    </section>
+<!-- {/if} -->
+
+  <!--{if $action eq 'add_booking'} -->
+    {insert_scripts files='utils.js'}
+    <script type="text/javascript">
+    {foreach from=$lang.booking_js item=item key=key}
+    var {$key} = "{$item}";
+    {/foreach}
+    </script>
+    <h5><span>{$lang.add}{$lang.label_booking}</span></h5>
+    <div class="blank"></div>
+     <form action="user.php" method="post" name="formBooking" onsubmit="return addBooking();">
+     <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd">
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.booking_goods_name}</td>
+        <td bgcolor="#ffffff">{$info.goods_name}</td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.booking_amount}:</td>
+        <td bgcolor="#ffffff"><input name="number" type="text" value="{$info.goods_number}" class="inputBg" /></td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.describe}:</td>
+        <td bgcolor="#ffffff"><textarea name="desc" cols="50" rows="5" wrap="virtual" class="B_blue">{$goods_attr}{$info.goods_desc|escape}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.contact_username}:</td>
+        <td bgcolor="#ffffff"><input name="linkman" type="text" value="{$info.consignee|escape}" size="25"  class="inputBg"/>
+        </td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.email_address}:</td>
+        <td bgcolor="#ffffff"><input name="email" type="text" value="{$info.email|escape}" size="25" class="inputBg" /></td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">{$lang.contact_phone}:</td>
+        <td bgcolor="#ffffff"><input name="tel" type="text" value="{$info.tel|escape}" size="25" class="inputBg" /></td>
+      </tr>
+      <tr>
+        <td align="right" bgcolor="#ffffff">&nbsp;</td>
+        <td bgcolor="#ffffff"><input name="act" type="hidden" value="act_add_booking" />
+          <input name="id" type="hidden" value="{$info.id}" />
+          <input name="rec_id" type="hidden" value="{$info.rec_id}" />
+          <input type="submit" name="submit" class="submit" value="{$lang.submit_booking_goods}" />
+          <input type="reset" name="reset" class="reset" value="{$lang.button_reset}" />
+        </td>
+      </tr>
+    </table>
+     </form>
+     
+    <!-- {/if} -->
+
+
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

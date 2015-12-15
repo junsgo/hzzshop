@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/flexslider.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaiosv.js,jquery.flexslider-min.js,jquery.mmenu.js'}
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="container">
+    <section class="main-view">
+        <div class="flexslider" style="margin-bottom:10px;">
+            <ul class="slides">
+                <!-- {foreach from=$pictures item=picture name=ptab}-->
+                <li><img src="{$picture.img_url}"/></li>
+                <!--{/foreach}-->
+            </ul>
+        </div>
+        <script type="text/javascript">
+            $(function() {
+                $('.flexslider').flexslider({
+                    animation: "slide",
+                    slideDirection: "horizontal"
+                });
+            });
+        </script> 
+        <div class="tm">
+            <form action="javascript:addToCart({$goods.goods_id})" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY">
+            <div class="td2">
+                <div class="td2_name">{$goods.goods_style_name}</div>
+                <div class="td2_cx">{$goods.goods_brief}</div>
+                <div class="td2_info">
+                    <div class="td2_price" style="margin-bottom:10px;"><div style=" float:left;font-size:16px; color:red; font-weight:700; margin-right:20px;">¥<font id="HHS_GOODS_AMOUNT"></font></div></font>市场价：¥<b>{$goods.market_price}</b> <span>已售：{$buy_num}件</span></div>
+                </div>
+            </div>
+            
+
+      <!-- {* 开始循环所有可选属性 *} -->
+      <!-- {foreach from=$specification item=spec key=spec_key} -->
+    <div class="pro_li">
+	    <p>{$spec.name}：</p>
+        <ul>
+
+
+            <!-- {foreach from=$spec.values item=value key=key} -->
+            <li><a onclick="changeP('spec_{$spec_key}','{$value.id}')" name="sp_url_{$spec_key}" id="url_{$value.id}"  title="{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}" {if $key eq 0}class="selected"{/if}>{$value.label}<input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked{/if} /></a></li>
+            <!-- {/foreach} -->
+            <input type="hidden" name="spec_list" value="{$key}" />
+
+
+        </ul>
+    </div>
+      <!-- {/foreach} -->
+      <!-- {* 结束循环可选属性 *} -->     
+      <div style="margin-top:10px;">
+            {if $goods.goods_number > 0}
+             <a class="buy1" href="javascript:addToCart({$goods.goods_id},0,1)">加入购物车</a>
+             <a class="buy2" href="javascript:addToCart({$goods.goods_id})">立即购买</a>
+             {else}
+             <a class="buy1 hui" href="javascript:void()">加入购物车</a>
+             <a class="buy2 hui" href="javascript:void()">立即购买</a>
+           {/if}
+        </div>
+            <input name="number" type="hidden" value="1" />
+            </form>
+        </div>
+    </section>
+    
+    
+    
+    
+    
+    
+<div class="pro-detial">
+    <ul class="pro_tab">
+        <li class="hover" id="one1" onclick="setTab('one',1,2)"><div>图文详情</div></li>
+        <li id="one2" onclick="setTab('one',2,2)"><div>产品参数</div></li>
+    </ul>
+    <div class="pro_con">
+        <div id="con_one_1">{$goods.goods_desc}</div>
+        <div id="con_one_2" style="display:none;">
+            <ul>
+                <!-- {foreach from=$properties item=property_group key=key} -->
+                <!-- {foreach from=$property_group item=property} -->
+	            <li>{$property.name|escape:html}：{$property.value}</li>
+                <!-- {/foreach}-->
+                <!-- {/foreach}-->
+            </ul>
+        </div>
+    </div>
+</div>    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript">
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+</script>
+<script type="text/javascript">
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+
+<!-- {literal} -->
+onload = function(){
+  changePrice();
+  fixpng();
+  try { onload_leftTime(); }
+  catch (e) {}
+}
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['HHS_FORMBUY']);
+  var qty = document.forms['HHS_FORMBUY'].elements['number'].value;
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['HHS_FORMBUY'].elements['number'].value = res.qty;
+    if (document.getElementById('HHS_GOODS_AMOUNT'))
+      document.getElementById('HHS_GOODS_AMOUNT').innerHTML = res.result;
+  }
+}
+/*
+*选择信息处理
+*/
+function changeP(b, c) {
+
+	var frm=document.forms['HHS_FORMBUY'];
+	var cur_id="";
+    document.getElementById('spec_value_' + c).checked=true;
+	document.getElementById('url_' + c).className="selected";
+	
+	for (var i = 0; i < frm.elements[b].length; i++) {
+		cur_id=frm.elements[b][i].id.substr(11);
+        document.getElementById('url_' + cur_id).className="";
+		if (frm.elements[b][i].checked)
+		{
+		   document.getElementById('url_' + c).className="selected";
+		}
+    }
+	
+	changePrice(); 
+}
+function goods_cut(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	if(Num>1)Num=Num-1;
+	num_val.value=Num;
+}
+function goods_add(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	Num=Num+1;
+	num_val.value=Num;
+}
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['HHS_FORMBUY']);
+  
+  var qty = document.forms['HHS_FORMBUY'].elements['number'].value;
+
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['HHS_FORMBUY'].elements['number'].value = res.qty;
+//alert(res.result);
+    if (document.getElementById('HHS_GOODS_AMOUNT'))
+      document.getElementById('HHS_GOODS_AMOUNT').innerHTML = res.result;
+  }
+}
+<!-- {/literal} -->
+</script>
+</html>

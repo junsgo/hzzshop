@@ -1,0 +1,8 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div id="page">
+  <header id="header" >
+    <div class="header_l"> <a class="ico_02" href="#menu"> 菜单栏 </a> </div>
+    <h1>{$shop_name}</h1>
+    <div class="header_r"> <a class="ico_01" href="flows.php?step=cart"> 购物车 </a><span id="HHS_CARTINFO">{insert name='cart_num'}</span> </div>
+  </header>
+</div>

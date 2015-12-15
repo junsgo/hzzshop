@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohai.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="header">
+    <a class="fl" href="javascript:history.back();"><i class="iconfont">&#xe605;</i></a>
+	<span class="headline">用户中心</span>
+	<a class="fr" href="index.php"><i class="iconfont">&#xe604;</i></a>
+</div>
+<!-- {if $action eq 'default'} -->
+<div class="container">
+    <div class="my">
+        <img src="{$info.headimgurl}">
+        <p>{$info.uname}</p>
+    </div>
+    
+    <div class="my_menu">
+        <ul>
+            <li>
+                <a href="user.php?act=order_list">
+                    <i class="iconfont">&#xe602;</i>
+                    <p>全部订单</p>
+                </a>
+            </li>
+            {if $open_team}
+            <li>
+                <a href="user.php?act=team_list">
+                    <i class="iconfont">&#xe606;</i>
+                    <p>我的拼团</p>
+                </a>
+            </li>
+            {/if}
+            <li>
+                <a href="user.php?act=address_list">
+                    <i class="iconfont">&#xe603;</i>
+                    <p>收货地址</p>
+                </a>
+            </li>
+            <li>
+                <a href="user.php?act=bonus">
+                    <i class="iconfont">&#xe607;</i>
+                    <p>优惠劵</p>
+                </a>
+            </li>
+            <li>
+                <a href="article.php?id=1">
+                    <i class="iconfont">&#xe60f;</i>
+                    <p>联系客服</p>
+                </a>
+            </li>
+            <li>
+                <a href="user.php?act=setting">
+                    <i class="iconfont">&#xe60e;</i>
+                    <p>设置</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- {/if} -->
+{if $subscribe==0}
+        <div class="guanzhu" id="guanzhu">
+            关注我们有更多惊喜，<a href="{$subscribe_url}">立即去关注</a>
+            <span onclick="document.getElementById('guanzhu').style.display='none';"><i class="fa fa-remove"></i></span>
+        </div>
+{/if}      
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

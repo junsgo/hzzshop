@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohai.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,shopping_flow.js,region.js,utils.js'}
+</head>
+<body>
+        <script type="text/javascript">
+          region.isAdmin = false;
+          {foreach from=$lang.flow_js item=item key=key}
+          var {$key} = "{$item}";
+          {/foreach}
+
+          {literal}
+          onload = function() {
+            if (!document.all)
+            {
+              document.forms['theForm'].reset();
+            }
+          }
+          {/literal}
+        </script>
+<div class="header">
+    <a class="fl" href="javascript:history.back();"><i class="iconfont">&#xe605;</i></a>
+	<span class="headline">收货地址</span>
+    {if $consignee.address_id}
+    <a class="fr" href="{$back_url}?act=drop_consignee&id={$consignee.address_id}"><i class="iconfont">&#xe60b;</i></a>
+    {else}
+    <a class="fr" href="user.php"><i class="iconfont">&#xe60a;</i></a>
+    {/if}
+</div>
+<div class="container">
+    <form action="{$back_url}" method="post" name="theForm" id="theForm" onsubmit="return checkConsignee(this)">
+    <input id="address_regionId" value="" type="hidden">
+    <input id="adid" value="" type="hidden">
+    <div class="address_add">
+        <table width="100%" border="0" cellspacing="1" cellpadding="0">
+            <tr>
+                <th>收货人</th>
+                <td><input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="{$consignee.consignee|escape}" placeholder="姓名"/><span id="updateTip1" style="color: red; display: none;">请填写姓名</span></td>
+            </tr>
+            <tr>
+                <th>手机号码</th>
+                <td><input name="mobile" type="text" class="inputBg"  id="mobile_{$sn}" value="{$consignee.mobile|escape}" placeholder="电话"/><span id="updateTip2" style="color: red; display: none;">请填写正确的电话</span></td>
+            </tr>
+            <tr>
+                <th>所在区域</th>
+                <td>
+<select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+    <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
+    <!-- {foreach from=$province_list item=province} -->
+    <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+    <!-- {/foreach} -->
+</select>
+<span id="updateTip3" style="color: red; display: none;">请选择省</span>
+<select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')">
+<option value="0">{$lang.please_select}{$name_of_region[2]}</option>
+<!-- {foreach from=$city_list item=city} -->
+<option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+<!-- {/foreach} -->
+</select>
+<span id="updateTip4" style="color: red; display: none;">请选择市</span>
+<select name="district" id="selDistricts">
+<option value="0">{$lang.please_select}{$name_of_region[3]}</option>
+<!-- {foreach from=$district_list item=district} -->
+<option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+<!-- {/foreach} -->  
+</select> 
+ <span id="updateTip5" style="color: red; display: none;">请选择区/县</span>
+                </td>
+            </tr>
+            <tr>
+                <th>详细地址</th>
+                <td>
+                    <input name="address" type="text" class="inputBg"  id="address_{$sn}" value="{$consignee.address|escape}" placeholder="详细地址" />
+                <span id="updateTip6" style="color: red; display: none;">请填写详细地址</span>
+                </td>
+            </tr>
+            <tr>
+                <th>地址类别</th>
+                <td>
+<select name="address_type" id="address_type">
+<option value="0">-选择家庭/公司-</option>
+<option value="1" {if $consignee.address_type eq 1}selected{/if}>家庭</option>
+<option value="2" {if $consignee.address_type eq 2}selected{/if}>公司</option>
+</select>
+                </td>
+            </tr>
+        </table>
+        <div class="address_btn">
+            <input name="address_id" type="hidden" value="{$consignee.address_id}" />
+            <input type="hidden" name="act" value="act_edit_consignee" />
+            <button class="submit" id="add">保存</button>
+        </div>
+    </div>
+    </form>   
+</div>
+</body>
+<script type="text/javascript">
+var process_request = "{$lang.process_request}";
+{foreach from=$lang.passport_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var country_not_null='国家不能为空';
+var province_not_null='省份不能为空';
+var city_not_null='城市不能为空';
+var district_not_null='区域不能为空';
+var consignee_not_null='收货人不能为空';
+var address_not_null='详细地址不能为空';
+
+var username_exist = "{$lang.username_exist}";
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+</html>

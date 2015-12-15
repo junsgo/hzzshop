@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohai.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/swiper.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaiosv2.js,swiper.min.js'}
+</head>
+<body>
+
+<div class="header">
+    <a class="fl" href="javascript:history.back();"><i class="iconfont">&#xe605;</i></a>
+	<span class="headline">商品详情</span>
+	<a class="fr" href="flows.php?step=cart"><i class="iconfont">&#xe601;</i><span id="HHS_CARTINFO">{insert name='cart_num'}</span></a>
+</div>
+<div class="container">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- {foreach from=$pictures item=picture name=ptab}-->
+            <div class="swiper-slide">
+                <a href="javascript:;"><img src="{$picture.img_url}" width="100%"></a>
+            </div>
+            <!--{/foreach}-->
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            var swiper = new Swiper('.swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: true,
+                spaceBetween: 30,
+                centeredSlides: true,
+                autoplay: 2500,
+                autoplayDisableOnInteraction: false
+            });
+        });
+    </script>
+    
+    
+    
+
+
+        <div class="tm">
+            <form action="javascript:addToCart({$goods.goods_id})" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY">
+            <div class="td2">
+                <div class="td2_name">{$goods.goods_style_name}</div>
+                <div class="td2_cx">{$goods.goods_brief}</div>
+                <div class="td2_info">
+                    <div class="td2_price" style="margin-bottom:10px;"><div style=" float:left;font-size:16px; color:red; font-weight:700; margin-right:20px;">¥<font id="HHS_GOODS_AMOUNT"></font>{if $goods.guige}/{$goods.guige}{/if}</div></font>市场价：¥<b>{$goods.market_price}</b> <span>已售：{$buy_num}件</span></div>
+                </div>
+            </div>
+            
+
+      <div class="spec">
+      <ul>
+{foreach from=$specification item=spec key=spec_key}
+      <li>
+      <label>{$spec.name}：</label>
+
+				  
+{foreach from=$spec.values item=value key=key}
+
+<a {if $key eq 0}class="cattsel"{/if} onclick="changeAtt(this)" href="javascript:;" name="{$value.id}" title="[{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]">{$value.label}<input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked{/if} /></a>
+
+{/foreach}
+
+                        <input type="hidden" name="spec_list" value="{$key}" />
+
+
+      </li>
+      {/foreach}
+      </ul>
+            </div>
+             
+      <div style="margin-top:10px;">
+            {if $goods.goods_number > 0}
+             <a class="buy1" href="javascript:addToCart({$goods.goods_id},0,1)">加入购物车</a>
+             <a class="buy2" href="javascript:addToCart({$goods.goods_id})">立即购买</a>
+             {else}
+             <a class="buy1 hui" href="javascript:void()">加入购物车</a>
+             <a class="buy2 hui" href="javascript:void()">立即购买</a>
+           {/if}
+        </div>
+            <input name="number" type="hidden" value="1" />
+            </form>
+        </div>
+    
+    
+    
+    
+    
+    
+    <div class="pro-detial">
+        <ul class="pro_tab">
+            <li class="hover" id="one1" onclick="setTab('one',1,2)"><div>图文详情</div></li>
+            <li id="one2" onclick="setTab('one',2,2)"><div>产品参数</div></li>
+        </ul>
+        <div class="pro_con">
+            <div id="con_one_1">{$goods.goods_desc}</div>
+            <div id="con_one_2" style="display:none;">
+                <ul>
+                    <!-- {foreach from=$properties item=property_group key=key} -->
+                    <!-- {foreach from=$property_group item=property} -->
+                    <li>{$property.name|escape:html}：{$property.value}</li>
+                    <!-- {/foreach}-->
+                    <!-- {/foreach}-->
+                </ul>
+            </div>
+        </div>
+    </div>    
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript">
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+</script>
+<script type="text/javascript">
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+
+<!-- {literal} -->
+onload = function(){
+  changePrice();
+  fixpng();
+  try { onload_leftTime(); }
+  catch (e) {}
+}
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['HHS_FORMBUY']);
+  var qty = document.forms['HHS_FORMBUY'].elements['number'].value;
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['HHS_FORMBUY'].elements['number'].value = res.qty;
+    if (document.getElementById('HHS_GOODS_AMOUNT'))
+      document.getElementById('HHS_GOODS_AMOUNT').innerHTML = res.result;
+  }
+}
+/*
+*选择信息处理
+*/
+function changeP(b, c) {
+
+	var frm=document.forms['HHS_FORMBUY'];
+	var cur_id="";
+    document.getElementById('spec_value_' + c).checked=true;
+	document.getElementById('url_' + c).className="selected";
+	
+	for (var i = 0; i < frm.elements[b].length; i++) {
+		cur_id=frm.elements[b][i].id.substr(11);
+        document.getElementById('url_' + cur_id).className="";
+		if (frm.elements[b][i].checked)
+		{
+		   document.getElementById('url_' + c).className="selected";
+		}
+    }
+	
+	changePrice(); 
+}
+function goods_cut(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	if(Num>1)Num=Num-1;
+	num_val.value=Num;
+}
+function goods_add(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	Num=Num+1;
+	num_val.value=Num;
+}
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['HHS_FORMBUY']);
+  
+  var qty = document.forms['HHS_FORMBUY'].elements['number'].value;
+
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['HHS_FORMBUY'].elements['number'].value = res.qty;
+//alert(res.result);
+    if (document.getElementById('HHS_GOODS_AMOUNT'))
+      document.getElementById('HHS_GOODS_AMOUNT').innerHTML = res.result;
+  }
+}
+<!-- {/literal} -->
+</script>
+
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="javascript" type="text/javascript">
+
+	wx.config({
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+	    appId: '{$appid}',
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    signature: '{$signature}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	        'onMenuShareTimeline',
+	        'onMenuShareAppMessage',
+	        'onMenuShareQQ',
+	        'onMenuShareWeibo',
+	        'checkJsApi',
+	        'openLocation',
+	        'getLocation'
+	    ]
+	});
+	
+	var title="{$title}";
+	var link= "{$link}";
+	var imgUrl="{$imgUrl}";
+	var desc= "{$desc}";
+	wx.ready(function () {
+	    wx.onMenuShareTimeline({//朋友圈
+	        title: title, // 分享标题
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	            // 用户确认分享后执行的回调函数
+	        	statis(2,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(2,2);
+	        }
+	    });
+	    wx.onMenuShareAppMessage({//好友
+	        title: title, // 分享标题
+	        desc: desc, // 
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        type: '', // 分享类型,music、video或link，不填默认为link
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+	        success: function () { 
+	        	// 用户确认分享后执行的回调函数
+	            statis(1,1);    
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(1,2);
+	        }
+	    });
+	  
+	    wx.onMenuShareQQ({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(4,1);
+	        },
+	        cancel: function () { 
+	           // 用户取消分享后执行的回调函数
+	        	statis(4,2);
+	        }
+	    });
+	    wx.onMenuShareWeibo({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(3,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(3,2);
+	        }
+	    });
+
+	    
+	});
+
+	function statis(share_type,share_status){
+		$.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+	}
+
+</script>
+
+
+
+</html>

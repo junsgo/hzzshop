@@ -1,0 +1,12 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div style="height:60px;"></div>
+<footer class="footer">
+    <ul>
+
+
+<!-- {foreach from=$navigator_list.bottom name=name item=item} -->
+    <li><a href="{$item.url}" class="nav-controller {if $current_url eq $item.url}active{/if}" ><i class="fa {$item.icon}"></i>{$item.name}</a></li>
+ <!-- {/foreach} -->
+ 
+    </ul>
+</footer>

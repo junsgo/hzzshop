@@ -1,0 +1,7 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{insert_scripts files='utils.js'}
+<div id="HHS_ORDERTOTAL" class="total">
+    <p><label>运费</label>+ ¥{$total.shipping_fee_formated}
+    <label>总价：</label><span id="totalPrice" class="total_price">{$total.amount_formated}</span>
+    </p>
+</div>

@@ -1,0 +1,19 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--{if $total.real_goods_count neq 0}-->
+<script>
+  region.isAdmin = false;
+  {foreach from=$lang.flow_js item=item key=key}
+  var {$key} = "{$item}";
+  {/foreach}
+</script>
+<!-- {foreach from=$consignee_list item=consignee key=sn} -->
+<a class="address" href="flows.php?step=address_list">
+    <input name="address_id" type="hidden"  value="{$consignee.address_id}" />
+    <p>{$consignee.consignee}　{$consignee.mobile}</p>
+    <p>{$consignee.address}</p>
+    <i class="fa fa-angle-right"></i>
+</a>
+<!-- {/foreach} -->            
+<!--{else}-->
+<input  type="radio"  style="display:none;"  checked name="address_id" value="-1">
+<!--{/if}-->

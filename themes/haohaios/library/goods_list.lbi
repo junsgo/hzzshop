@@ -1,0 +1,53 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="srp album flex-f-row">
+    <!--{foreach from=$goods_list item=goods}-->
+    <!-- {if $goods.goods_id} -->
+        <div class="product flex_in single_item">
+            <div class="pro-inner">
+                <div class="proImg-wrap">
+                    <a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}"><img src="{$goods.goods_img}"></a>
+                </div>
+                <div class="proInfo-wrap">
+                	{if $goods.goods_number lt 1}
+		        		<span class="sell_fr"></span>	
+		        	{/if}
+                    <div class="proTitle"> <a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}">{$goods.goods_name}</a> </div>
+                    <div class="proSKU"></div>
+                    <div class="proPrice"> <em>¥{$goods.shop_price}</em> </div>
+                    <div class="proService"> <del>¥{$goods.market_price}</del></div>
+                    <div class="proSales">销量:<em>{$goods.buy_num}</em></div>
+                </div> 
+            </div>
+        </div>
+    <!--{/if}-->
+    <!--{/foreach}-->
+</div>
+
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script>
+<script type="text/javascript">
+window.onload = function()
+{
+  Compare.init();
+  fixpng();
+}
+{foreach from=$lang.compare_js item=item key=key}
+{if $key neq 'button_compare'}
+var {$key} = "{$item}";
+{else}
+var button_compare = '';
+{/if}
+{/foreach}
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
